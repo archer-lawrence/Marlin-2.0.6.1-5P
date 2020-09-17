@@ -35,6 +35,9 @@
 #if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
   #include HAL_PATH(../HAL, endstop_interrupts.h)
 #endif
+#if ENABLED(Z_ENDSTOP_INTERRUPTS_FEATURE)
+  #include HAL_PATH(../HAL, z_endstop_interrupts.h)
+#endif
 
 #if BOTH(SD_ABORT_ON_ENDSTOP_HIT, SDSUPPORT)
   #include "printcounter.h" // for print_job_timer
@@ -277,6 +280,7 @@ void Endstops::init() {
   #endif
 
   TERN_(ENDSTOP_INTERRUPTS_FEATURE, setup_endstop_interrupts());
+  TERN_(Z_ENDSTOP_INTERRUPTS_FEATURE, z_setup_endstop_interrupts());
 
   // Enable endstops
   enable_globally(ENABLED(ENDSTOPS_ALWAYS_ON_DEFAULT));
@@ -499,7 +503,7 @@ void Endstops::update() {
   #define COPY_LIVE_STATE(SRC_BIT, DST_BIT) SET_BIT_TO(live_state, DST_BIT, TEST(live_state, SRC_BIT))
 
   #if ENABLED(G38_PROBE_TARGET) && PIN_EXISTS(Z_MIN_PROBE) && !(CORE_IS_XY || CORE_IS_XZ)
-    // If G38 command is active check Z_MIN_PROBE for ALL movement
+    // If G38 command is active check Z_MIN_PROBE for ALL movement -- G38 Probe towards target
     if (G38_move) UPDATE_ENDSTOP_BIT(Z, MIN_PROBE);
   #endif
 
@@ -815,7 +819,7 @@ void Endstops::update() {
     }
   }
 
-  if (stepper.axis_is_moving(Z_AXIS)) {
+   if (stepper.axis_is_moving(Z_AXIS)) {
     if (stepper.motor_direction(Z_AXIS_HEAD)) { // Z -direction. Gantry down, bed up.
 
       #if HAS_Z_MIN || (Z_SPI_SENSORLESS && Z_HOME_DIR < 0)

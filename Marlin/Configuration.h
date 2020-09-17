@@ -698,7 +698,8 @@
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
-//#define ENDSTOP_INTERRUPTS_FEATURE
+// #define ENDSTOP_INTERRUPTS_FEATURE
+#define Z_ENDSTOP_INTERRUPTS_FEATURE 4
 
 /**
  * Endstop Noise Threshold
@@ -866,6 +867,7 @@
  *
  */
 //#define Z_MIN_PROBE_PIN 32 // Pin 32 is the RAMPS default
+#define Z_MIN_PROBE_PIN P0_10   // use bltouch pin to piezo orion
 
 /**
  * Probe Type
@@ -1398,9 +1400,9 @@
   #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing
 #endif
 
-// Homing speeds (mm/m)
+// Homing speeds (mm/min)
 #define HOMING_FEEDRATE_XY (90*60)
-#define HOMING_FEEDRATE_Z  (15*60)
+#define HOMING_FEEDRATE_Z  (150*60) // 150 mm/sec
 
 // Validate that endstops are triggered on homing moves
 // #define VALIDATE_HOMING_ENDSTOPS
